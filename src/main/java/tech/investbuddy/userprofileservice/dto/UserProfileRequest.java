@@ -38,13 +38,13 @@ public class UserProfileRequest {
     @PositiveOrZero(message = "Investment budget must be zero or a positive number.")
     private float investmentBudget;
 
-    @NotNull(message = "Preference for ethical investments is required.")
+    
     private boolean prefersEthicalInvestments;
 
     @Enumerated(EnumType.STRING)
     private UserProfile.MaritalStatus maritalStatus;
 
-    @NotNull(message = "Preference for passive income is required.")
+    
     private boolean prefersPassiveIncome;
 
     @Enumerated(EnumType.STRING)
