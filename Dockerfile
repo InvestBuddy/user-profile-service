@@ -8,7 +8,7 @@ WORKDIR /app
 COPY target/user-profile-service-1.0-SNAPSHOT.jar user-profile-service.jar
 
 # Expose port
-EXPOSE 8081
+EXPOSE 8082
 
 # Run the application
 ENTRYPOINT ["java", "-jar", "user-profile-service.jar"]
