@@ -120,10 +120,10 @@ pipeline {
 			        script {
 			           // Replace a placeholder in user-service.yml with the build number
 			          if (isUnix()) {
-			             sh "sed -i 's#<BUILD_NUMBER>#${BUILD_NUMBER}#g' user-service.yml"
+			             sh "sed -i 's#<BUILD_NUMBER>#${BUILD_NUMBER}#g' user-profile-service.yml"
 			           } 
 				   else {
-			                bat "powershell -Command \"(Get-Content user-service.yml) -replace '<BUILD_NUMBER>', '${BUILD_NUMBER}' | Set-Content user-service.yml\""
+			                bat "powershell -Command \"(Get-Content user-profile-service.yml) -replace '<BUILD_NUMBER>', '${BUILD_NUMBER}' | Set-Content user-profile-service.yml\""
 			            }
 			
 			            withKubeConfig([credentialsId: 'kubectl']) {
