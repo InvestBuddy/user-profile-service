@@ -115,21 +115,27 @@ pipeline {
             }
         }
 
-        stage('Deploy to Kubernetes') {
-            steps {
-                script {
-                    withKubeConfig([credentialsId: 'kubectl']) {
-                        // Ensure kubectl is configured and available in the Jenkins environment
-                        bat """
-                            kubectl apply -f user-profile-service-db-deployment.yml
-                            kubectl apply -f user-profile-service-db-service.yml
-                            kubectl apply -f user-profile-service-deployment.yml
-                            kubectl apply -f user-profile-service-service.yml
-                        """
-                    }
-                }
-            }
-        }
+			 stage('Deploy to Kubernetes') {
+			     steps {
+			        script {
+			           // Replace a placeholder in user-service.yml with the build number
+			          if (isUnix()) {
+			             sh "sed -i 's#<BUILD_NUMBER>#${BUILD_NUMBER}#g' user-service.yml"
+			           } 
+				   else {
+			                bat "powershell -Command \"(Get-Content user-service.yml) -replace '<BUILD_NUMBER>', '${BUILD_NUMBER}' | Set-Content user-service.yml\""
+			            }
+			
+			            withKubeConfig([credentialsId: 'kubectl']) {
+			              if (isUnix()) {
+			                sh 'kubectl apply -f user-profile-service.yml'
+			             } else {
+			                bat 'kubectl apply -f user-profile-service.yml'
+			               }
+			             }
+			          }
+			     }
+			}
     }
 
 	post {
