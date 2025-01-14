@@ -27,6 +27,8 @@ public class UserProfile {
 
     private String location;
 
+    private String gender;
+
     @Enumerated(EnumType.STRING)
     private RiskTolerance riskTolerance;
 
@@ -80,9 +82,26 @@ public class UserProfile {
         BEGINNER, INTERMEDIATE, ADVANCED
     }
 
+/*    public enum PreferredDomain {
+//        STOCKS,
+//        ETF,
+//        REAL_ESTATE,
+//        BONDS,
+//        SOCIALLY_RESPONSIBLE_INVESTMENT,
+//        CRYPTOCURRENCIES,
+//        STARTUPS,
+//        COMMODITIES
+    }*/
+
     public enum PreferredDomain {
-        CRYPTOCURRENCY, TECHNOLOGY, FINANCE, HEALTHCARE, REAL_ESTATE
+        actions,
+        cryptomonnaies,
+        ETF,
+        immobilier,
+        obligations,
+        startups
     }
+
 
     public enum InvestmentStyle {
         LONG_TERM, SHORT_TERM, ACTIVE_TRADING

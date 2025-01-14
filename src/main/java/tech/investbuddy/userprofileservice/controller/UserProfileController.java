@@ -28,4 +28,9 @@ public class UserProfileController {
     public ResponseEntity<UserProfileResponse> getUserProfileById(@PathVariable UUID id) {
         return userProfileService.getUserProfile(id);
     }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<String> deleteUserProfileById(@PathVariable UUID userId) {
+        return userProfileService.deleteUserProfile(userId);
+    }
 }

@@ -82,4 +82,13 @@ public class UserProfileService {
                 .build();
         return ResponseEntity.ok(userProfileResponse);
     }
+
+    public ResponseEntity<String> deleteUserProfile(UUID userId) {
+        UserProfile userProfile = userProfileRepository.findByUserId(userId);
+        if(userProfile != null) {
+            userProfileRepository.delete(userProfile);
+            return ResponseEntity.ok("Deleted user profile");
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    }
 }
