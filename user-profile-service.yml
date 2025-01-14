@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user-profile-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-profile-service
+  template:
+    metadata:
+      labels:
+        app: user-profile-service
+    spec:
+      containers: 
+        - name: user-profile-service
+          image: abakhar217/user-profile-service:user-profile-service-<BUILD_NUMBER>
+          ports:
+            - containerPort: 8082
+          env:
+            - name: SPRING_DATASOURCE_URL
+              value: "jdbc:postgresql://user-profile-service-db:5432/user_profile_db"
+  
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                  secretKeyRef:
+                      name: postgres-secrets
+                      key: POSTGRES_USER
+                      
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                  secretKeyRef:
+                     name: postgres-secrets
+                     key: POSTGRES_PASSWORD
+                     
+            - name: KAFKA_BOOTSTRAP_SERVERS
+              value: "kafka-deployment:9092"
+            - name: KAFKA_TOPIC
+              value: "user-events"
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user-profile-service
+spec:
+  selector:
+    app: user-profile-service
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082
+  type: ClusterIP
