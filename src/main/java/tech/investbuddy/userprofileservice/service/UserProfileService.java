@@ -28,26 +28,20 @@ public class UserProfileService {
                 .bodyToMono(Boolean.class)
                 .block();
 
-        if(Boolean.TRUE.equals(result)) {
+        if (Boolean.TRUE.equals(result)) {
             UserProfile userProfile = UserProfile.builder()
-                        .userId(userProfileRequest.getUserId())
-                                .expenses(userProfileRequest.getExpenses())
-                                        .income(userProfileRequest.getIncome())
-                                                .employmentStatus(userProfileRequest.getEmploymentStatus())
-                                                        .experienceLevel(userProfileRequest.getExperienceLevel())
-                                                                .followsMarketNews(userProfileRequest.isFollowsMarketNews())
-                                                                        .investmentBudget(userProfileRequest.getInvestmentBudget())
-                                                                                .investmentGoal(userProfileRequest.getInvestmentGoal())
-                                                                                        .investmentStyle(userProfileRequest.getInvestmentStyle())
-                                                                                                .location(userProfileRequest.getLocation())
-                                                                                                        .lossTolerancePercentage(userProfileRequest.getLossTolerancePercentage())
-                                                                                                                .maritalStatus(userProfileRequest.getMaritalStatus())
-                                                                                                                        .prefersEthicalInvestments(userProfileRequest.isPrefersEthicalInvestments())
-                                                                                                                                .riskTolerance(userProfileRequest.getRiskTolerance())
-                                                                                                                                        .numberOfDependents(userProfileRequest.getNumberOfDependents())
-                                                                                                                                                .preferredInvestDomains(userProfileRequest.getPreferredInvestDomains())
-                                                                                                                                                        .prefersPassiveIncome(userProfileRequest.isPrefersPassiveIncome())
-                                                                                                                                                                .build();
+                    .userId(userProfileRequest.getUserId())
+                    .city(userProfileRequest.getCity())
+                    .dateOfBirth(userProfileRequest.getDateOfBirth())
+                    .income(userProfileRequest.getIncome())
+                    .gender(userProfileRequest.getGender())
+                    .riskTolerance(userProfileRequest.getRiskTolerance())
+                    .investmentHistory(userProfileRequest.getInvestmentHistory())
+                    .financialObjective(userProfileRequest.getFinancialObjective())
+                    .preferredSector(userProfileRequest.getPreferredSector())
+                    .investmentFrequency(userProfileRequest.getInvestmentFrequency())
+                    .preferredDomain(userProfileRequest.getPreferredDomain())
+                    .build();
             userProfileRepository.save(userProfile);
         }else {
             throw new IllegalArgumentException("User does not exist");
@@ -63,22 +57,17 @@ public class UserProfileService {
 
         UserProfileResponse userProfileResponse = UserProfileResponse.builder()
                 .userId(userProfile.getUserId())
-                .expenses(userProfile.getExpenses())
+                .city(userProfile.getCity())
+                .dateOfBirth(userProfile.getDateOfBirth())
+                .age(userProfile.getAge())  // L'âge est calculé dans la classe UserProfile
                 .income(userProfile.getIncome())
-                .employmentStatus(userProfile.getEmploymentStatus())
-                .experienceLevel(userProfile.getExperienceLevel())
-                .followsMarketNews(userProfile.isFollowsMarketNews())
-                .investmentBudget(userProfile.getInvestmentBudget())
-                .investmentGoal(userProfile.getInvestmentGoal())
-                .investmentStyle(userProfile.getInvestmentStyle())
-                .location(userProfile.getLocation())
-                .lossTolerancePercentage(userProfile.getLossTolerancePercentage())
-                .maritalStatus(userProfile.getMaritalStatus())
-                .prefersEthicalInvestments(userProfile.isPrefersEthicalInvestments())
+                .gender(userProfile.getGender())
                 .riskTolerance(userProfile.getRiskTolerance())
-                .numberOfDependents(userProfile.getNumberOfDependents())
-                .preferredInvestDomains(userProfile.getPreferredInvestDomains())
-                .prefersPassiveIncome(userProfile.isPrefersPassiveIncome())
+                .investmentHistory(userProfile.getInvestmentHistory())
+                .financialObjective(userProfile.getFinancialObjective())
+                .preferredSector(userProfile.getPreferredSector())
+                .investmentFrequency(userProfile.getInvestmentFrequency())
+                .preferredDomain(userProfile.getPreferredDomain())
                 .build();
         return ResponseEntity.ok(userProfileResponse);
     }

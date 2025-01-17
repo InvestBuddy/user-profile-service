@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.Period;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,98 +19,83 @@ import java.util.UUID;
 @Data
 public class UserProfile {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(nullable = false, unique = true)
     private UUID userId;
 
-    private float income;
+    @Column(nullable = false)
+    private String city;
 
-    private String location;
+    @Column(nullable = false)
+    private LocalDate dateOfBirth;
 
-    private String gender;
+    @Column(nullable = false)
+    private Integer age;
+
+    @Column(nullable = false)
+    private Double income;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Gender gender;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private RiskTolerance riskTolerance;
 
-    @Enumerated(EnumType.STRING)
-    private InvestmentGoal investmentGoal;
-
-    private float expenses;
-
-    private float investmentBudget;
-
-    private boolean prefersEthicalInvestments;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "investment_history", joinColumns = @JoinColumn(name = "profile_id"))
+    @Column(name = "domain")
+    private List<String> investmentHistory;
 
     @Enumerated(EnumType.STRING)
-    private MaritalStatus maritalStatus;
-
-    private boolean prefersPassiveIncome;
-
-    @Enumerated(EnumType.STRING)
-    private ExperienceLevel experienceLevel;
-
-    @ElementCollection(targetClass = PreferredDomain.class)
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "user_preferred_invest_domains", joinColumns = @JoinColumn(name = "user_profile_id"))
-    private List<PreferredDomain> preferredInvestDomains;
-
-    private boolean followsMarketNews;
-
-    private int numberOfDependents;
-
-    private float lossTolerancePercentage;
+    @Column(nullable = false)
+    private FinancialObjective financialObjective;
 
     @Enumerated(EnumType.STRING)
-    private EmploymentStatus employmentStatus;
+    @Column(nullable = false)
+    private PreferredSector preferredSector;
 
     @Enumerated(EnumType.STRING)
-    private InvestmentStyle investmentStyle;
+    @Column(nullable = false)
+    private InvestmentFrequency investmentFrequency;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "preferred_domains", joinColumns = @JoinColumn(name = "profile_id"))
+    @Column(name = "domain")
+    private List<String> preferredDomain;
+
+    /**
+     * Méthode appelée avant la persistance d'un nouvel enregistrement.
+     */
+    @PrePersist
+    @PreUpdate
+    private void calculateAge() {
+        this.age = Period.between(this.dateOfBirth, LocalDate.now()).getYears();
+    }
+
+    // Enums
+
+    public enum Gender {
+        WOMAN, MAN
+    }
 
     public enum RiskTolerance {
         LOW, MEDIUM, HIGH
     }
 
-    public enum InvestmentGoal {
-        RETIREMENT, GROWTH, SAVINGS, OTHER
+    public enum FinancialObjective {
+        RETRAITE, EPARGNE_DE_SECURITE, ACHAT_IMMOBILIER, EDUCATION_DES_ENFANTS, VOYAGES, EPARGNE_DE_DEPART, INVESTIR_DANS_EDUCATION
     }
 
-    public enum MaritalStatus {
-        SINGLE, MARRIED, DIVORCED, WIDOWED
+    public enum PreferredSector {
+        ACTIONS, CRYPTOMONNAIES, ETF, IMMOBILIER, OBLIGATIONS, STARTUPS
     }
 
-    public enum ExperienceLevel {
-        BEGINNER, INTERMEDIATE, ADVANCED
+    public enum InvestmentFrequency {
+        MENSUEL, TRIMESTRIEL, ANNUEL
     }
-
-/*    public enum PreferredDomain {
-//        STOCKS,
-//        ETF,
-//        REAL_ESTATE,
-//        BONDS,
-//        SOCIALLY_RESPONSIBLE_INVESTMENT,
-//        CRYPTOCURRENCIES,
-//        STARTUPS,
-//        COMMODITIES
-    }*/
-
-    public enum PreferredDomain {
-        actions,
-        cryptomonnaies,
-        ETF,
-        immobilier,
-        obligations,
-        startups
-    }
-
-
-    public enum InvestmentStyle {
-        LONG_TERM, SHORT_TERM, ACTIVE_TRADING
-    }
-
-    public enum EmploymentStatus {
-        EMPLOYED, SELF_EMPLOYED, RETIRED, STUDENT, UNEMPLOYED
-    }
-
 }

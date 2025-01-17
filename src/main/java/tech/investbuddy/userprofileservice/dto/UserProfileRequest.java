@@ -1,6 +1,5 @@
 package tech.investbuddy.userprofileservice.dto;
 
-import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import tech.investbuddy.userprofileservice.model.UserProfile;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,52 +17,39 @@ import java.util.UUID;
 @NoArgsConstructor
 public class UserProfileRequest {
 
-    @NotNull(message = "User ID is required.")
+    @NotNull(message = "User ID cannot be null")
     private UUID userId;
 
-    @PositiveOrZero(message = "Income must be zero or a positive number.")
-    private float income;
+    @NotBlank(message = "City cannot be blank")
+    @Size(max = 100, message = "City name cannot exceed 100 characters")
+    private String city;
 
-    @NotBlank(message = "Location must not be blank.")
-    private String location;
+    @NotNull(message = "Date of birth cannot be null")
+    @Past(message = "Date of birth must be in the past")
+    private LocalDate dateOfBirth;
 
-    @Enumerated(EnumType.STRING)
+    @NotNull(message = "Income cannot be null")
+    @Positive(message = "Income must be a positive value")
+    private Double income;
+
+    @NotNull(message = "Gender cannot be null")
+    private UserProfile.Gender gender;
+
+    @NotNull(message = "Risk tolerance cannot be null")
     private UserProfile.RiskTolerance riskTolerance;
 
-    @Enumerated(EnumType.STRING)
-    private UserProfile.InvestmentGoal investmentGoal;
+    @Size(max = 10, message = "Investment history cannot have more than 10 items")
+    private List<String> investmentHistory;
 
-    @PositiveOrZero(message = "Expenses must be zero or a positive number.")
-    private float expenses;
+    @NotNull(message = "Financial objective cannot be null")
+    private UserProfile.FinancialObjective financialObjective;
 
-    @PositiveOrZero(message = "Investment budget must be zero or a positive number.")
-    private float investmentBudget;
+    @NotNull(message = "Preferred sector cannot be null")
+    private UserProfile.PreferredSector preferredSector;
 
-    
-    private boolean prefersEthicalInvestments;
+    @NotNull(message = "Investment frequency cannot be null")
+    private UserProfile.InvestmentFrequency investmentFrequency;
 
-    @Enumerated(EnumType.STRING)
-    private UserProfile.MaritalStatus maritalStatus;
-
-    
-    private boolean prefersPassiveIncome;
-
-    @Enumerated(EnumType.STRING)
-    private UserProfile.ExperienceLevel experienceLevel;
-
-    private List<UserProfile.PreferredDomain> preferredInvestDomains;
-
-    private boolean followsMarketNews;
-
-    private int numberOfDependents;
-
-    @Min(value = 0, message = "Loss tolerance percentage must be at least 0%.")
-    @Max(value = 100, message = "Loss tolerance percentage must not exceed 100%.")
-    private float lossTolerancePercentage;
-
-    @Enumerated(EnumType.STRING)
-    private UserProfile.EmploymentStatus employmentStatus;
-
-    @Enumerated(EnumType.STRING)
-    private UserProfile.InvestmentStyle investmentStyle;
+    @Size(max = 5, message = "Preferred domains cannot have more than 5 items")
+    private List<String> preferredDomain;
 }

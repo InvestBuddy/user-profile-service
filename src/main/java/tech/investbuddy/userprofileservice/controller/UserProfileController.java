@@ -21,6 +21,7 @@ public class UserProfileController {
     @ResponseStatus(HttpStatus.CREATED)
     public void createUserProfile(
             @Valid @RequestBody UserProfileRequest userProfileRequest) {
+        System.out.println(userProfileRequest);
         userProfileService.save(userProfileRequest);
     }
 
