@@ -10,6 +10,7 @@ import tech.investbuddy.userprofileservice.dto.UserProfileResponse;
 import tech.investbuddy.userprofileservice.model.UserProfile;
 import tech.investbuddy.userprofileservice.repository.UserProfileRepository;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -19,37 +20,32 @@ public class UserProfileService {
     private final WebClient.Builder webClientBuilder;
 
     public void save(UserProfileRequest userProfileRequest) {
-
-        // call User Service to know if the user really exist, before creating a new profile
-
+        // Check if the user exists in the User Service
         Boolean result = webClientBuilder.build().get()
-                .uri("http://user-service/api/v1/users/"+userProfileRequest.getUserId()+"/exists")
+                .uri("http://user-service/api/v1/users/" + userProfileRequest.getUserId() + "/exists")
                 .retrieve()
                 .bodyToMono(Boolean.class)
                 .block();
 
-        if(Boolean.TRUE.equals(result)) {
+        if (Boolean.TRUE.equals(result)) {
+            // Map the request to the entity
             UserProfile userProfile = UserProfile.builder()
-                        .userId(userProfileRequest.getUserId())
-                                .expenses(userProfileRequest.getExpenses())
-                                        .income(userProfileRequest.getIncome())
-                                                .employmentStatus(userProfileRequest.getEmploymentStatus())
-                                                        .experienceLevel(userProfileRequest.getExperienceLevel())
-                                                                .followsMarketNews(userProfileRequest.isFollowsMarketNews())
-                                                                        .investmentBudget(userProfileRequest.getInvestmentBudget())
-                                                                                .investmentGoal(userProfileRequest.getInvestmentGoal())
-                                                                                        .investmentStyle(userProfileRequest.getInvestmentStyle())
-                                                                                                .location(userProfileRequest.getLocation())
-                                                                                                        .lossTolerancePercentage(userProfileRequest.getLossTolerancePercentage())
-                                                                                                                .maritalStatus(userProfileRequest.getMaritalStatus())
-                                                                                                                        .prefersEthicalInvestments(userProfileRequest.isPrefersEthicalInvestments())
-                                                                                                                                .riskTolerance(userProfileRequest.getRiskTolerance())
-                                                                                                                                        .numberOfDependents(userProfileRequest.getNumberOfDependents())
-                                                                                                                                                .preferredInvestDomains(userProfileRequest.getPreferredInvestDomains())
-                                                                                                                                                        .prefersPassiveIncome(userProfileRequest.isPrefersPassiveIncome())
-                                                                                                                                                                .build();
+                    .userId(userProfileRequest.getUserId())
+                    .gender(userProfileRequest.getGender())
+                    .city(userProfileRequest.getCity())
+                    .age(userProfileRequest.getAge())
+                    .income(userProfileRequest.getIncome())
+                    .riskTolerance(userProfileRequest.getRiskTolerance())
+                    .investmentFrequency(userProfileRequest.getInvestmentFrequency())
+                    .preferredSector(userProfileRequest.getPreferredSector())
+                    .preferredDomains(userProfileRequest.getPreferredDomains())
+                    .investmentHistory(userProfileRequest.getInvestmentHistory())
+                    .financialObjective(userProfileRequest.getFinancialObjective()) // Ensure this is set
+
+                    .build();
+
             userProfileRepository.save(userProfile);
-        }else {
+        } else {
             throw new IllegalArgumentException("User does not exist");
         }
     }
@@ -57,35 +53,32 @@ public class UserProfileService {
     public ResponseEntity<UserProfileResponse> getUserProfile(UUID userId) {
         UserProfile userProfile = userProfileRepository.findByUserId(userId);
         if (userProfile == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(null);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
 
         UserProfileResponse userProfileResponse = UserProfileResponse.builder()
                 .userId(userProfile.getUserId())
-                .expenses(userProfile.getExpenses())
+                .city(userProfile.getCity())
+                .age(userProfile.getAge())
+                .gender(userProfile.getGender())
                 .income(userProfile.getIncome())
-                .employmentStatus(userProfile.getEmploymentStatus())
-                .experienceLevel(userProfile.getExperienceLevel())
-                .followsMarketNews(userProfile.isFollowsMarketNews())
-                .investmentBudget(userProfile.getInvestmentBudget())
-                .investmentGoal(userProfile.getInvestmentGoal())
-                .investmentStyle(userProfile.getInvestmentStyle())
-                .location(userProfile.getLocation())
-                .lossTolerancePercentage(userProfile.getLossTolerancePercentage())
-                .maritalStatus(userProfile.getMaritalStatus())
-                .prefersEthicalInvestments(userProfile.isPrefersEthicalInvestments())
                 .riskTolerance(userProfile.getRiskTolerance())
-                .numberOfDependents(userProfile.getNumberOfDependents())
-                .preferredInvestDomains(userProfile.getPreferredInvestDomains())
-                .prefersPassiveIncome(userProfile.isPrefersPassiveIncome())
+                .investmentFrequency(userProfile.getInvestmentFrequency())
+                .preferredSector(userProfile.getPreferredSector())
+                .preferredDomains(userProfile.getPreferredDomains()) // Directly set the list
+                .investmentHistory(userProfile.getInvestmentHistory()) // Directly set the list
+                .financialObjective(userProfile.getFinancialObjective()) // Ensure this is set
+
                 .build();
+
         return ResponseEntity.ok(userProfileResponse);
     }
 
+
+
     public ResponseEntity<String> deleteUserProfile(UUID userId) {
         UserProfile userProfile = userProfileRepository.findByUserId(userId);
-        if(userProfile != null) {
+        if (userProfile != null) {
             userProfileRepository.delete(userProfile);
             return ResponseEntity.ok("Deleted user profile");
         }

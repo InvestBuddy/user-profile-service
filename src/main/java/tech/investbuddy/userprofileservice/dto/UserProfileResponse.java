@@ -2,7 +2,6 @@ package tech.investbuddy.userprofileservice.dto;
 
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,20 +17,15 @@ import java.util.UUID;
 @NoArgsConstructor
 public class UserProfileResponse {
     private UUID userId;
+    private String city; // Matches "City" in JSON
+    private int age; // Matches "Age" in JSON
+    private UserProfile.Gender gender; // Matches "Gender" in JSON
     private float income;
-    private String location;
-    private UserProfile.RiskTolerance riskTolerance;
-    private UserProfile.InvestmentGoal investmentGoal;
-    private float expenses;
-    private float investmentBudget;
-    private boolean prefersEthicalInvestments;
-    private UserProfile.MaritalStatus maritalStatus;
-    private boolean prefersPassiveIncome;
-    private UserProfile.ExperienceLevel experienceLevel;
-    private List<UserProfile.PreferredDomain> preferredInvestDomains;
-    private boolean followsMarketNews;
-    private int numberOfDependents;
-    private float lossTolerancePercentage;
-    private UserProfile.EmploymentStatus employmentStatus;
-    private UserProfile.InvestmentStyle investmentStyle;
+    private UserProfile.RiskTolerance riskTolerance; // Matches "Risk_Tolernce" in JSON
+    private UserProfile.InvestmentFrequency investmentFrequency; // Matches "Investment_Frequency" in JSON
+    private UserProfile.FinancialObjective financialObjective; // Matches "Financial_Objective" in JSON
+    private UserProfile.PreferredSector preferredSector; // Matches "Preferred_Sector" in JSON
+    private List<UserProfile.PreferredDomain> preferredDomains; // Matches "PreferredDomain" in JSON
+    private List<String> investmentHistory; // Matches "Investment_History" in JSON
 }
+

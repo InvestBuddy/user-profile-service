@@ -1,12 +1,16 @@
 package tech.investbuddy.userprofileservice.dto;
 
-import jakarta.persistence.*;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import tech.investbuddy.userprofileservice.model.UserProfile;
+import tech.investbuddy.userprofileservice.utile.GenderDeserializer;
 
 import java.util.List;
 import java.util.UUID;
@@ -23,46 +27,31 @@ public class UserProfileRequest {
     @PositiveOrZero(message = "Income must be zero or a positive number.")
     private float income;
 
-    @NotBlank(message = "Location must not be blank.")
-    private String location;
+    @NotBlank(message = "City must not be blank.")
+    private String city; // Matches "City" in JSON
+
+    @Min(value = 0, message = "Age must be at least 0.")
+    private int age; // Matches "Age" in JSON
+
+    @JsonDeserialize(using = GenderDeserializer.class)
+    private UserProfile.Gender gender; // Matches "Gender" in JSON
 
     @Enumerated(EnumType.STRING)
-    private UserProfile.RiskTolerance riskTolerance;
+    private UserProfile.RiskTolerance riskTolerance; // Matches "Risk_Tolernce" in JSON
+
+    @ElementCollection
+    private List<String> investmentHistory; // Matches "Investment_History" in JSON
 
     @Enumerated(EnumType.STRING)
-    private UserProfile.InvestmentGoal investmentGoal;
-
-    @PositiveOrZero(message = "Expenses must be zero or a positive number.")
-    private float expenses;
-
-    @PositiveOrZero(message = "Investment budget must be zero or a positive number.")
-    private float investmentBudget;
-
-    
-    private boolean prefersEthicalInvestments;
+    private UserProfile.FinancialObjective financialObjective;
 
     @Enumerated(EnumType.STRING)
-    private UserProfile.MaritalStatus maritalStatus;
-
-    
-    private boolean prefersPassiveIncome;
+    private UserProfile.PreferredSector preferredSector; // Matches "Preferred_Sector" in JSON
 
     @Enumerated(EnumType.STRING)
-    private UserProfile.ExperienceLevel experienceLevel;
+    private UserProfile.InvestmentFrequency investmentFrequency; // Matches "Invesstment_Frequency" in JSON
 
-    private List<UserProfile.PreferredDomain> preferredInvestDomains;
-
-    private boolean followsMarketNews;
-
-    private int numberOfDependents;
-
-    @Min(value = 0, message = "Loss tolerance percentage must be at least 0%.")
-    @Max(value = 100, message = "Loss tolerance percentage must not exceed 100%.")
-    private float lossTolerancePercentage;
-
+    @ElementCollection(targetClass = UserProfile.PreferredDomain.class)
     @Enumerated(EnumType.STRING)
-    private UserProfile.EmploymentStatus employmentStatus;
-
-    @Enumerated(EnumType.STRING)
-    private UserProfile.InvestmentStyle investmentStyle;
+    private List<UserProfile.PreferredDomain> preferredDomains; // Matches "PreferredDomain" in JSON
 }
