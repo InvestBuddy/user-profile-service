@@ -17,7 +17,7 @@ pipeline {
             steps {
                 // Checkout the code from the repository using the configured Git credentials
                 checkout([$class: 'GitSCM',
-                          branches: [[name: 'master']],
+                          branches: [[name: 'new-version-med']],
                           userRemoteConfigs: [[url: 'https://github.com/InvestBuddy/user-profile-service.git', credentialsId: 'git']]])
             }
         }
